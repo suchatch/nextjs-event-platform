@@ -1,7 +1,9 @@
 import NextAuth from "next-auth";
-
+//  อิมพอร์ต options (AuthOptions ออบเจ็กต์) สำหรับตั้งค่าการยืนยันตัวตนแต่ละแบบ
+// import { options } from "./options";
 import { authOptions } from "@/lib/session";
 
-const handler = NextAuth(authOptions);
-
-export { handler as GET, handler as POST };
+//  กำหนด handler จากฟังก์ชัน NextAuth() 
+const handler = NextAuth(authOptions)
+//  กำหนด handler จากฟังก์ชัน NextAuth() 
+export { handler as GET, handler as POST }
