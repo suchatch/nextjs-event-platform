@@ -34,7 +34,9 @@ const Navbar = async () => {
       <div className='flexCenter gap-4'>
         {session?.user ? (
           <>
-            {/* <ProfileMenu session={session} /> */}
+            <button type="button" className="text-sm" onClick={() => signOut()}> 
+               Sign out
+            </button>
 
             <Link href="/create-project">
               <Button title='Share work' />
