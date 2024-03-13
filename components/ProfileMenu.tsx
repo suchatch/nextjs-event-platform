@@ -7,17 +7,18 @@ import { Fragment, useState } from "react";
 import { Menu, Transition } from "@headlessui/react";
 
 import { SessionInterface } from "@/types/index";
+import Button from "./Button";
 
 const ProfileMenu = ({ session }: { session: SessionInterface }) => {
     const [openModal, setOpenModal] = useState(false);
-
+    
     return (
         <div className="flexCenter z-10 flex-col relative">
             <Menu as="div">
                 <Menu.Button className="flexCenter" onMouseEnter={() => setOpenModal(true)} >
-                    {session?.user?.image && (
+                    {session?.user?.image ?? (
                         <Image
-                            src={session.user.image}
+                            src={session?.user?.image ?? './dot.svg'}
                             width={40}
                             height={40}
                             className="rounded-full"

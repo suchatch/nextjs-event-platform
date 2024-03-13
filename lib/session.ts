@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth/next";
 import { NextAuthOptions, User } from "next-auth";
 import { AdapterUser } from "next-auth/adapters";
 import GoogleProvider from "next-auth/providers/google";
+import CognitoProvider from "next-auth/providers/cognito";
 import jsonwebtoken from 'jsonwebtoken'
 import { JWT } from "next-auth/jwt";
 
@@ -10,10 +11,15 @@ import { CreateUserParams, SessionInterface, UserProfile } from "@/types";
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
+    // GoogleProvider({
+    //   clientId: process.env.GOOGLE_CLIENT_ID!,
+    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    // }),
+    CognitoProvider({
+      clientId: process.env.COGNITO_CLIENT_ID!,
+      clientSecret: process.env.COGNITO_CLIENT_SECRET!,
+      issuer: process.env.COGNITO_ISSUER!,
+    })
   ],
   jwt: {
     encode: ({ secret, token }) => {
@@ -61,14 +67,15 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user }: {
       user: AdapterUser | User
     }) {
+      console.log(`user ==>`, user);
       try {
-        const userExists = await getUser(user?.email as string)
+        // const userExists = await getUser(user?.email as string)
 
-        if (!userExists.email) {
-          await createUser({
-            email: user?.email ?? '',
-          })
-        }
+        // if (!userExists.email) {
+        //   await createUser({
+        //     email: user?.email ?? '',
+        //   })
+        // }
 
         return true;
       } catch (error: any) {
@@ -81,6 +88,6 @@ export const authOptions: NextAuthOptions = {
 
 export async function getCurrentUser() {
   const session = await getServerSession(authOptions) as SessionInterface;
-
+  console.log(session)
   return session;
 }
