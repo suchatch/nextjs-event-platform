@@ -37,7 +37,7 @@ export async function getUser(email: string) {
   try {
     await connectToDatabase()
 
-    const user = await User.find({ email })
+    const user = await User.findOne({ email })
 
     if (!user) throw new Error('User not found')
     return JSON.parse(JSON.stringify(user))

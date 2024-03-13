@@ -6,6 +6,7 @@ import { getCurrentUser } from "@/lib/session";
 
 import AuthProviders from "./AuthProviders";
 import Button from "./Button";
+import ProfileMenu from "./ProfileMenu";
 // import ProfileMenu from "./ProfileMenu";
 
 const Navbar = async () => {
@@ -34,12 +35,10 @@ const Navbar = async () => {
       <div className='flexCenter gap-4'>
         {session?.user ? (
           <>
-            <button type="button" className="text-sm" onClick={() => signOut()}> 
-               Sign out
-            </button>
+            <ProfileMenu session={session} />
 
             <Link href="/create-project">
-              <Button title='Share work' />
+              <Button title='Create event' />
             </Link>
           </>
         ) : (

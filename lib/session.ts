@@ -2,8 +2,8 @@ import { getServerSession } from "next-auth/next";
 import { NextAuthOptions, User } from "next-auth";
 import { AdapterUser } from "next-auth/adapters";
 import GoogleProvider from "next-auth/providers/google";
-// import jsonwebtoken from 'jsonwebtoken'
-// import { JWT } from "next-auth/jwt";
+import jsonwebtoken from 'jsonwebtoken'
+import { JWT } from "next-auth/jwt";
 
 import { createUser, getUser } from "@/lib/actions/user.actions";
 import { CreateUserParams, SessionInterface, UserProfile } from "@/types";
@@ -15,24 +15,24 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
-  // jwt: {
-  //   encode: ({ secret, token }) => {
-  //     // const encodedToken = jsonwebtoken.sign(
-  //     //   {
-  //     //     ...token,
-  //     //     iss: "grafbase",
-  //     //     exp: Math.floor(Date.now() / 1000) + 60 * 60,
-  //     //   },
-  //     //   secret
-  //     // );
+  jwt: {
+    encode: ({ secret, token }) => {
+      const encodedToken = jsonwebtoken.sign(
+        {
+          ...token,
+          iss: "nextjs-event-platform",
+          exp: Math.floor(Date.now() / 1000) + 60 * 60,
+        },
+        secret
+      );
       
-  //     // return encodedToken;
-  //   },
-  //   decode: async ({ secret, token }) => {
-  //     // const decodedToken = jsonwebtoken.verify(token!, secret);
-  //     // return decodedToken as JWT;
-  //   },
-  // },
+      return encodedToken;
+    },
+    decode: async ({ secret, token }) => {
+      const decodedToken = jsonwebtoken.verify(token!, secret);
+      return decodedToken as JWT;
+    },
+  },
   theme: {
     colorScheme: "light",
     logo: "/logo.svg",
@@ -63,8 +63,8 @@ export const authOptions: NextAuthOptions = {
     }) {
       try {
         const userExists = await getUser(user?.email as string)
-        console.log(`userExists =>`, userExists);
-        if (!userExists.user) {
+
+        if (!userExists.email) {
           await createUser({
             email: user?.email ?? '',
           })
@@ -81,6 +81,6 @@ export const authOptions: NextAuthOptions = {
 
 export async function getCurrentUser() {
   const session = await getServerSession(authOptions) as SessionInterface;
-  console.log(`session =>`, session)
+
   return session;
 }
