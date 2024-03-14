@@ -67,20 +67,19 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user }: {
       user: AdapterUser | User
     }) {
-      console.log(`user ==>`, user);
       try {
-        // const userExists = await getUser(user?.email as string)
+        const userExists = await getUser(user?.email as string)
 
-        // if (!userExists.email) {
-        //   await createUser({
-        //     email: user?.email ?? '',
-        //   })
-        // }
+        if (!userExists) {
+          await createUser({
+            email: user?.email ?? '',
+          })
+        }
 
         return true;
       } catch (error: any) {
-        console.log("Error checking if user exists: ", error.message);
-        return false;
+        console.log('Error caught:', error.message);
+        return false
       }
     },
   },
@@ -88,6 +87,5 @@ export const authOptions: NextAuthOptions = {
 
 export async function getCurrentUser() {
   const session = await getServerSession(authOptions) as SessionInterface;
-  console.log(session)
   return session;
 }
